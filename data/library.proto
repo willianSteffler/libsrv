@@ -1,0 +1,62 @@
+syntax = "proto3";
+package libsrv;
+
+option go_package = "./data";
+
+message Autor {
+  // @inject_tag: gorm:"primaryKey"
+  int32 codigo = 1;
+
+  // @inject_tag: gorm:"many2many:livrosautor;foreignKey:codigoautor;References:autores.codigo"
+  repeated Livro livros = 2;
+  string nome = 3;
+}
+
+message Edicao {
+  int32 codigolivro =2;
+  int32 numero =3;
+  int32 ano =4;
+}
+
+message Livro {
+  // @inject_tag: gorm:"primaryKey"
+  int32 codigo =1;
+  string titulo =2;
+
+  // @inject_tag: gorm:"many2many:livrosautor;foreignKey:codigolivro;References:livros.codigo"
+  repeated Autor autores=3;
+
+  // @inject_tag: gorm:"foreignKey:codigolivro;references:livros.codigo"
+  repeated Edicao edicoes=4;
+}
+
+
+message ConsultarLivroArgs {
+  string nome = 1;
+  string titulo =2;
+  int32 ano =3;
+  int32 edicao =4;
+  int32 pagina =5;
+  int32 itens =6;
+}
+
+message Erro {
+  string erro =1;
+}
+
+message ConsultarLivrosResp {
+  repeated Livro livros =1;
+}
+
+message SocketMsg {
+  string operacao = 1;
+  oneof opArgs {
+    Livro livro = 2;
+    ConsultarLivroArgs consulta = 3;
+    Erro erro =4;
+    ConsultarLivrosResp consulta_resp =5;
+  }
+}
+
+
+
