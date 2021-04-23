@@ -1,14 +1,15 @@
 package socket
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/willianSteffler/libsrv/data"
 	"google.golang.org/protobuf/proto"
 	"gorm.io/gorm"
+	"io"
 	"log"
 	"net"
 	"runtime/debug"
+	"time"
 )
 
 const  (
@@ -115,14 +116,34 @@ func Listen(port int, db *gorm.DB) error {
 	}
 }
 
-func GetSocketMessage(c net.Conn) (err error,msg data.SocketMsg){
-	var in []byte
-	if _, err = bufio.NewReader(c).Read(in); err != nil {
-		err = fmt.Errorf("erro ao ler do socket %v\n ", err)
-	} else if err = proto.Unmarshal(in, &msg); err != nil {
-		err = fmt.Errorf("mensagem não reconhecida %v\n", err)
+func GetSocketMessage(c net.Conn) (error ,data.SocketMsg){
+	var msg data.SocketMsg
+	var err error
+	var n int
+	var buf  []byte
+	tmp := make([]byte, 1024)
+	for {
+		n, err = c.Read(tmp)
+		if err != nil {
+			if err == io.EOF  {
+				err = nil
+			}
+			break
+		}
+		buf = append(buf, tmp[:n]...)
+		if n == 1024{
+			// ler buffer grande
+			c.SetReadDeadline(time.Now().Add(10 * time.Millisecond))
+		} else {
+			break
+		}
 	}
 
+	if err != nil {
+		err = fmt.Errorf("erro ao ler do socket %v\n ", err)
+	} else if err = proto.Unmarshal(buf, &msg); err != nil {
+		err = fmt.Errorf("mensagem não reconhecida %v\n", err)
+	}
 	return err,msg
 }
 
