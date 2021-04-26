@@ -5,11 +5,10 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/willianSteffler/libsrv/data"
 	"github.com/willianSteffler/libsrv/socket"
 	"gorm.io/driver/postgres"
-	_ "gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
-	_ "gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
@@ -36,7 +35,6 @@ var conf Conf
 func main() {
 
 	flag.IntVar(&conf.socketPort, "socket", 3000, "porta socket")
-
 	flag.StringVar(&conf.driver, "driver", "sqlite", "driver do banco de dados")
 	flag.IntVar(&conf.connLife, "connLife", 60, "tempo de vida da conexão com o banco em minutos")
 	flag.IntVar(&conf.connIdle, "connIdle", 5, "maximo de conexões com o banco em estado idle")
@@ -48,12 +46,12 @@ func main() {
 		"\n\tInfo   = 4")
 
 	Usage := func() {
-		fmt.Fprintf(os.Stderr, "Sintaxe do comando %s: dbConnStr [opções]\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Sintaxe do comando %s: [opções] dbConnStr\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "** dbConnStr: string de conexão do banco de dados ou arquivo .db\n")
 		flag.PrintDefaults()
 	}
-	flag.Usage = Usage
 
+	flag.Usage = Usage
 	flag.Parse()
 
 	args := flag.Args()
@@ -102,6 +100,13 @@ func connectDb() (*gorm.DB, error) {
 			sqlDb.SetConnMaxLifetime(time.Duration(cfg.connLife) * time.Minute)
 		}
 	}
+
+
+	err = db.AutoMigrate(
+		&data.Livro{},
+		&data.Autor{},
+		&data.Edicao{},
+		)
 
 	return db, err
 

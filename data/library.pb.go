@@ -27,9 +27,10 @@ type Autor struct {
 
 	// @inject_tag: gorm:"primaryKey"
 	Codigo int32 `protobuf:"varint,1,opt,name=codigo,proto3" json:"codigo,omitempty" gorm:"primaryKey"`
-	// @inject_tag: gorm:"many2many:livrosautor;foreignKey:codigoautor;References:autores.codigo"
-	Livros []*Livro `protobuf:"bytes,2,rep,name=livros,proto3" json:"livros,omitempty" gorm:"many2many:livrosautor;foreignKey:codigoautor;References:autores.codigo"`
-	Nome   string   `protobuf:"bytes,3,opt,name=nome,proto3" json:"nome,omitempty"`
+	// @inject_tag: gorm:"many2many:livroautor;joinForeignKey:codigoautor;joinReferences:codigolivro"
+	Livros []*Livro `protobuf:"bytes,2,rep,name=livros,proto3" json:"livros,omitempty" gorm:"many2many:livroautor;joinForeignKey:codigoautor;joinReferences:codigolivro"`
+	// @inject_tag: gorm:"not null;default:null"
+	Nome string `protobuf:"bytes,3,opt,name=nome,proto3" json:"nome,omitempty" gorm:"not null;default:null"`
 }
 
 func (x *Autor) Reset() {
@@ -90,9 +91,12 @@ type Edicao struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Codigolivro int32 `protobuf:"varint,2,opt,name=codigolivro,proto3" json:"codigolivro,omitempty"`
-	Numero      int32 `protobuf:"varint,3,opt,name=numero,proto3" json:"numero,omitempty"`
-	Ano         int32 `protobuf:"varint,4,opt,name=ano,proto3" json:"ano,omitempty"`
+	// @inject_tag: gorm:"primaryKey"
+	Codigolivro int32 `protobuf:"varint,2,opt,name=codigolivro,proto3" json:"codigolivro,omitempty" gorm:"primaryKey"`
+	// @inject_tag: gorm:"primaryKey;not null;default:null"
+	Numero int32 `protobuf:"varint,3,opt,name=numero,proto3" json:"numero,omitempty" gorm:"primaryKey;not null;default:null"`
+	// @inject_tag: gorm:"not null"
+	Ano int32 `protobuf:"varint,4,opt,name=ano,proto3" json:"ano,omitempty" gorm:"not null"`
 }
 
 func (x *Edicao) Reset() {
@@ -154,12 +158,13 @@ type Livro struct {
 	unknownFields protoimpl.UnknownFields
 
 	// @inject_tag: gorm:"primaryKey"
-	Codigo int32  `protobuf:"varint,1,opt,name=codigo,proto3" json:"codigo,omitempty" gorm:"primaryKey"`
-	Titulo string `protobuf:"bytes,2,opt,name=titulo,proto3" json:"titulo,omitempty"`
-	// @inject_tag: gorm:"many2many:livrosautor;foreignKey:codigolivro;References:livros.codigo"
-	Autores []*Autor `protobuf:"bytes,3,rep,name=autores,proto3" json:"autores,omitempty" gorm:"many2many:livrosautor;foreignKey:codigolivro;References:livros.codigo"`
-	// @inject_tag: gorm:"foreignKey:codigolivro;references:livros.codigo"
-	Edicoes []*Edicao `protobuf:"bytes,4,rep,name=edicoes,proto3" json:"edicoes,omitempty" gorm:"foreignKey:codigolivro;references:livros.codigo"`
+	Codigo int32 `protobuf:"varint,1,opt,name=codigo,proto3" json:"codigo,omitempty" gorm:"primaryKey"`
+	// @inject_tag: gorm:"not null;default:null"
+	Titulo string `protobuf:"bytes,2,opt,name=titulo,proto3" json:"titulo,omitempty" gorm:"not null;default:null"`
+	// @inject_tag: gorm:"many2many:livroautor;joinForeignKey:codigolivro;joinReferences:codigoautor"
+	Autores []*Autor `protobuf:"bytes,3,rep,name=autores,proto3" json:"autores,omitempty" gorm:"many2many:livroautor;joinForeignKey:codigolivro;joinReferences:codigoautor"`
+	// @inject_tag: gorm:"foreignKey:codigolivro;references:codigo"
+	Edicoes []*Edicao `protobuf:"bytes,4,rep,name=edicoes,proto3" json:"edicoes,omitempty" gorm:"foreignKey:codigolivro;references:codigo"`
 }
 
 func (x *Livro) Reset() {

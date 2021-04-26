@@ -7,26 +7,31 @@ message Autor {
   // @inject_tag: gorm:"primaryKey"
   int32 codigo = 1;
 
-  // @inject_tag: gorm:"many2many:livrosautor;foreignKey:codigoautor;References:autores.codigo"
+  // @inject_tag: gorm:"many2many:livroautor;joinForeignKey:codigoautor;joinReferences:codigolivro"
   repeated Livro livros = 2;
+  // @inject_tag: gorm:"not null;default:null"
   string nome = 3;
 }
 
 message Edicao {
+  // @inject_tag: gorm:"primaryKey"
   int32 codigolivro =2;
+  // @inject_tag: gorm:"primaryKey;not null;default:null"
   int32 numero =3;
+  // @inject_tag: gorm:"not null"
   int32 ano =4;
 }
 
 message Livro {
   // @inject_tag: gorm:"primaryKey"
   int32 codigo =1;
+  // @inject_tag: gorm:"not null;default:null"
   string titulo =2;
 
-  // @inject_tag: gorm:"many2many:livrosautor;foreignKey:codigolivro;References:livros.codigo"
+  // @inject_tag: gorm:"many2many:livroautor;joinForeignKey:codigolivro;joinReferences:codigoautor"
   repeated Autor autores=3;
 
-  // @inject_tag: gorm:"foreignKey:codigolivro;references:livros.codigo"
+  // @inject_tag: gorm:"foreignKey:codigolivro;references:codigo"
   repeated Edicao edicoes=4;
 }
 

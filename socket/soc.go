@@ -54,8 +54,8 @@ func handleConnection(c net.Conn, dao data.LibraryController) {
 				var livros []data.Livro
 				if err, livros = dao.ConsultarLivro(*c); err == nil {
 					var lr []*data.Livro
-					for _, livro := range livros {
-						lr = append(lr, &livro)
+					for i, _ := range livros {
+						lr = append(lr, &livros[i])
 					}
 					resp.OpArgs = &data.SocketMsg_ConsultaResp{
 						ConsultaResp: &data.ConsultarLivrosResp{Livros: lr},

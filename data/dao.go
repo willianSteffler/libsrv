@@ -3,6 +3,7 @@ package data
 import (
 	"fmt"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type LibraryController struct {
@@ -10,45 +11,79 @@ type LibraryController struct {
 }
 
 func (c *LibraryController) CriarLivro(livro *Livro)(err error){
-	return c.db.Create(livro).Error
+
+	if livro.Titulo == "" {
+		return fmt.Errorf("deve ser informado o titulo do livro")
+	}
+
+	if len(livro.Autores) == 0 {
+		return fmt.Errorf("o livro deve conter ao menos um autor")
+	} else {
+		for i, e := range livro.Autores {
+			if e.Nome == ""  {
+				return fmt.Errorf("deve ser informado o nome do autor [%d]",i)
+			}
+		}
+	}
+
+	if len(livro.Edicoes) == 0 {
+		return fmt.Errorf("o livro deve conter ao menos uma edição")
+	} else {
+		for i, e := range livro.Edicoes {
+			if e.Numero == 0 || e.Ano == 0 {
+				return fmt.Errorf("deve ser informado ano e numero da edição [%d]",i)
+			}
+		}
+	}
+
+	return c.db.Create(&livro).Error
 }
 
 func (c *LibraryController) ConsultarLivro(consulta ConsultarLivroArgs)(err error,livros []Livro){
-	var db = consultaPreloads(consulta,c.db)
+	var db = c.db
+	var q string
 	var offset,limit int
 	offset = int(consulta.Pagina * consulta.Itens)
 	limit = int(consulta.Itens)
-	db.Offset(offset).Limit(limit)
 
-	if consulta.Titulo != "" {
-		db.Find(&livros,fmt.Sprintf(`titulo like %%%s%%`,consulta.Titulo)).Order("titulo")
-	} else {
-		db.Find(&livros).Order("titulo")
-	}
-
-	return db.Error, livros
-}
-
-func consultaPreloads(consulta ConsultarLivroArgs,db *gorm.DB) *gorm.DB{
-	var q string
 	if consulta.Nome != "" {
-		q = fmt.Sprintf(`nome like %%%s%%`,consulta.Nome)
+		nomes := strings.Split(consulta.Nome,",")
+		q += "( "
+		for _, nome := range nomes {
+			q += fmt.Sprintf(`autores.nome like '%s' or `,nome)
+		}
+
+		q = strings.TrimRight(q," or ")
+		q += ") and "
 	}
-	db.Preload("autores",q)
-	q = ""
+
 	if consulta.Ano != 0 || consulta.Edicao != 0 {
 		if consulta.Ano != 0{
-			q = fmt.Sprintf(`ano = %d`,consulta.Ano)
+			q += fmt.Sprintf(`e.ano = %d and `,consulta.Ano)
 		}
 		if consulta.Edicao != 0{
-			if q != "" {
-				q += " and "
-			}
-			q += fmt.Sprintf(`numero = %d`,consulta.Edicao)
+			q += fmt.Sprintf(`e.numero = %d and `,consulta.Edicao)
 		}
 	}
-	db.Preload("edicoes",q)
-	return db
+
+	if consulta.Titulo != "" {
+		q += fmt.Sprintf(`livros.titulo like '%s'`,consulta.Titulo)
+	}
+
+	sql := fmt.Sprintf( "SELECT DISTINCT livros.* "+
+		"FROM livros, autores "+
+		"JOIN livroautor l on l.codigolivro = livros.codigo and l.codigoautor = autores.codigo "+
+		"JOIN edicoes e on e.codigolivro = livros.codigo " +
+		"LIMIT %d " +
+		"OFFSET %d ",limit,offset)
+	if q != "" {
+		q = strings.TrimRight(q," and ")
+		sql = sql + " WHERE " + q
+	}
+
+	db.Preload("Edicoes").Preload("Autores").Raw(sql).Find(&livros)
+
+	return db.Error, livros
 }
 
 func (c *LibraryController) RemoverLivro(livro *Livro)(err error){
@@ -62,4 +97,16 @@ func (c *LibraryController) AlterarLivro(livro *Livro)(err error){
 func (c *LibraryController) Init(db *gorm.DB) *LibraryController {
 	c.db = db
 	return c
+}
+
+func (Edicao) TableName() string {
+	return "edicoes"
+}
+
+func (Autor) TableName() string {
+	return "autores"
+}
+
+func (Livro) TableName() string {
+	return "livros"
 }
