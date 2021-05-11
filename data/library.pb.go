@@ -524,6 +524,86 @@ func (*SocketMsg_Erro) isSocketMsg_OpArgs() {}
 
 func (*SocketMsg_ConsultaResp) isSocketMsg_OpArgs() {}
 
+type SingleResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Types that are assignable to Resp:
+	//	*SingleResp_Livro
+	//	*SingleResp_Err
+	Resp isSingleResp_Resp `protobuf_oneof:"resp"`
+}
+
+func (x *SingleResp) Reset() {
+	*x = SingleResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_library_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SingleResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SingleResp) ProtoMessage() {}
+
+func (x *SingleResp) ProtoReflect() protoreflect.Message {
+	mi := &file_library_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SingleResp.ProtoReflect.Descriptor instead.
+func (*SingleResp) Descriptor() ([]byte, []int) {
+	return file_library_proto_rawDescGZIP(), []int{7}
+}
+
+func (m *SingleResp) GetResp() isSingleResp_Resp {
+	if m != nil {
+		return m.Resp
+	}
+	return nil
+}
+
+func (x *SingleResp) GetLivro() *Livro {
+	if x, ok := x.GetResp().(*SingleResp_Livro); ok {
+		return x.Livro
+	}
+	return nil
+}
+
+func (x *SingleResp) GetErr() *Erro {
+	if x, ok := x.GetResp().(*SingleResp_Err); ok {
+		return x.Err
+	}
+	return nil
+}
+
+type isSingleResp_Resp interface {
+	isSingleResp_Resp()
+}
+
+type SingleResp_Livro struct {
+	Livro *Livro `protobuf:"bytes,1,opt,name=livro,proto3,oneof"`
+}
+
+type SingleResp_Err struct {
+	Err *Erro `protobuf:"bytes,2,opt,name=err,proto3,oneof"`
+}
+
+func (*SingleResp_Livro) isSingleResp_Resp() {}
+
+func (*SingleResp_Err) isSingleResp_Resp() {}
+
 var File_library_proto protoreflect.FileDescriptor
 
 var file_library_proto_rawDesc = []byte{
@@ -579,8 +659,28 @@ var file_library_proto_rawDesc = []byte{
 	0x0b, 0x32, 0x1b, 0x2e, 0x6c, 0x69, 0x62, 0x73, 0x72, 0x76, 0x2e, 0x43, 0x6f, 0x6e, 0x73, 0x75,
 	0x6c, 0x74, 0x61, 0x72, 0x4c, 0x69, 0x76, 0x72, 0x6f, 0x73, 0x52, 0x65, 0x73, 0x70, 0x48, 0x00,
 	0x52, 0x0c, 0x63, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x52, 0x65, 0x73, 0x70, 0x42, 0x08,
-	0x0a, 0x06, 0x6f, 0x70, 0x41, 0x72, 0x67, 0x73, 0x42, 0x08, 0x5a, 0x06, 0x2e, 0x2f, 0x64, 0x61,
-	0x74, 0x61, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x0a, 0x06, 0x6f, 0x70, 0x41, 0x72, 0x67, 0x73, 0x22, 0x5d, 0x0a, 0x0a, 0x53, 0x69, 0x6e, 0x67,
+	0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x25, 0x0a, 0x05, 0x6c, 0x69, 0x76, 0x72, 0x6f, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x6c, 0x69, 0x62, 0x73, 0x72, 0x76, 0x2e, 0x4c,
+	0x69, 0x76, 0x72, 0x6f, 0x48, 0x00, 0x52, 0x05, 0x6c, 0x69, 0x76, 0x72, 0x6f, 0x12, 0x20, 0x0a,
+	0x03, 0x65, 0x72, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x6c, 0x69, 0x62,
+	0x73, 0x72, 0x76, 0x2e, 0x45, 0x72, 0x72, 0x6f, 0x48, 0x00, 0x52, 0x03, 0x65, 0x72, 0x72, 0x42,
+	0x06, 0x0a, 0x04, 0x72, 0x65, 0x73, 0x70, 0x32, 0xdb, 0x01, 0x0a, 0x07, 0x4c, 0x69, 0x62, 0x72,
+	0x61, 0x72, 0x79, 0x12, 0x3e, 0x0a, 0x0f, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x72,
+	0x4c, 0x69, 0x76, 0x72, 0x6f, 0x73, 0x12, 0x1a, 0x2e, 0x6c, 0x69, 0x62, 0x73, 0x72, 0x76, 0x2e,
+	0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x72, 0x4c, 0x69, 0x76, 0x72, 0x6f, 0x41, 0x72,
+	0x67, 0x73, 0x1a, 0x0d, 0x2e, 0x6c, 0x69, 0x62, 0x73, 0x72, 0x76, 0x2e, 0x4c, 0x69, 0x76, 0x72,
+	0x6f, 0x30, 0x01, 0x12, 0x2f, 0x0a, 0x0a, 0x43, 0x72, 0x69, 0x61, 0x72, 0x4c, 0x69, 0x76, 0x72,
+	0x6f, 0x12, 0x0d, 0x2e, 0x6c, 0x69, 0x62, 0x73, 0x72, 0x76, 0x2e, 0x4c, 0x69, 0x76, 0x72, 0x6f,
+	0x1a, 0x12, 0x2e, 0x6c, 0x69, 0x62, 0x73, 0x72, 0x76, 0x2e, 0x53, 0x69, 0x6e, 0x67, 0x6c, 0x65,
+	0x52, 0x65, 0x73, 0x70, 0x12, 0x31, 0x0a, 0x0c, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x61, 0x72, 0x4c,
+	0x69, 0x76, 0x72, 0x6f, 0x12, 0x0d, 0x2e, 0x6c, 0x69, 0x62, 0x73, 0x72, 0x76, 0x2e, 0x4c, 0x69,
+	0x76, 0x72, 0x6f, 0x1a, 0x12, 0x2e, 0x6c, 0x69, 0x62, 0x73, 0x72, 0x76, 0x2e, 0x53, 0x69, 0x6e,
+	0x67, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x12, 0x2c, 0x0a, 0x07, 0x41, 0x6c, 0x74, 0x65, 0x72,
+	0x61, 0x72, 0x12, 0x0d, 0x2e, 0x6c, 0x69, 0x62, 0x73, 0x72, 0x76, 0x2e, 0x4c, 0x69, 0x76, 0x72,
+	0x6f, 0x1a, 0x12, 0x2e, 0x6c, 0x69, 0x62, 0x73, 0x72, 0x76, 0x2e, 0x53, 0x69, 0x6e, 0x67, 0x6c,
+	0x65, 0x52, 0x65, 0x73, 0x70, 0x42, 0x08, 0x5a, 0x06, 0x2e, 0x2f, 0x64, 0x61, 0x74, 0x61, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -595,7 +695,7 @@ func file_library_proto_rawDescGZIP() []byte {
 	return file_library_proto_rawDescData
 }
 
-var file_library_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_library_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_library_proto_goTypes = []interface{}{
 	(*Autor)(nil),               // 0: libsrv.Autor
 	(*Edicao)(nil),              // 1: libsrv.Edicao
@@ -604,21 +704,32 @@ var file_library_proto_goTypes = []interface{}{
 	(*Erro)(nil),                // 4: libsrv.Erro
 	(*ConsultarLivrosResp)(nil), // 5: libsrv.ConsultarLivrosResp
 	(*SocketMsg)(nil),           // 6: libsrv.SocketMsg
+	(*SingleResp)(nil),          // 7: libsrv.SingleResp
 }
 var file_library_proto_depIdxs = []int32{
-	2, // 0: libsrv.Autor.livros:type_name -> libsrv.Livro
-	0, // 1: libsrv.Livro.autores:type_name -> libsrv.Autor
-	1, // 2: libsrv.Livro.edicoes:type_name -> libsrv.Edicao
-	2, // 3: libsrv.ConsultarLivrosResp.livros:type_name -> libsrv.Livro
-	2, // 4: libsrv.SocketMsg.livro:type_name -> libsrv.Livro
-	3, // 5: libsrv.SocketMsg.consulta:type_name -> libsrv.ConsultarLivroArgs
-	4, // 6: libsrv.SocketMsg.erro:type_name -> libsrv.Erro
-	5, // 7: libsrv.SocketMsg.consulta_resp:type_name -> libsrv.ConsultarLivrosResp
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	2,  // 0: libsrv.Autor.livros:type_name -> libsrv.Livro
+	0,  // 1: libsrv.Livro.autores:type_name -> libsrv.Autor
+	1,  // 2: libsrv.Livro.edicoes:type_name -> libsrv.Edicao
+	2,  // 3: libsrv.ConsultarLivrosResp.livros:type_name -> libsrv.Livro
+	2,  // 4: libsrv.SocketMsg.livro:type_name -> libsrv.Livro
+	3,  // 5: libsrv.SocketMsg.consulta:type_name -> libsrv.ConsultarLivroArgs
+	4,  // 6: libsrv.SocketMsg.erro:type_name -> libsrv.Erro
+	5,  // 7: libsrv.SocketMsg.consulta_resp:type_name -> libsrv.ConsultarLivrosResp
+	2,  // 8: libsrv.SingleResp.livro:type_name -> libsrv.Livro
+	4,  // 9: libsrv.SingleResp.err:type_name -> libsrv.Erro
+	3,  // 10: libsrv.Library.ConsultarLivros:input_type -> libsrv.ConsultarLivroArgs
+	2,  // 11: libsrv.Library.CriarLivro:input_type -> libsrv.Livro
+	2,  // 12: libsrv.Library.DeletarLivro:input_type -> libsrv.Livro
+	2,  // 13: libsrv.Library.Alterar:input_type -> libsrv.Livro
+	2,  // 14: libsrv.Library.ConsultarLivros:output_type -> libsrv.Livro
+	7,  // 15: libsrv.Library.CriarLivro:output_type -> libsrv.SingleResp
+	7,  // 16: libsrv.Library.DeletarLivro:output_type -> libsrv.SingleResp
+	7,  // 17: libsrv.Library.Alterar:output_type -> libsrv.SingleResp
+	14, // [14:18] is the sub-list for method output_type
+	10, // [10:14] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_library_proto_init() }
@@ -711,6 +822,18 @@ func file_library_proto_init() {
 				return nil
 			}
 		}
+		file_library_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SingleResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	file_library_proto_msgTypes[6].OneofWrappers = []interface{}{
 		(*SocketMsg_Livro)(nil),
@@ -718,15 +841,19 @@ func file_library_proto_init() {
 		(*SocketMsg_Erro)(nil),
 		(*SocketMsg_ConsultaResp)(nil),
 	}
+	file_library_proto_msgTypes[7].OneofWrappers = []interface{}{
+		(*SingleResp_Livro)(nil),
+		(*SingleResp_Err)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_library_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
-			NumServices:   0,
+			NumServices:   1,
 		},
 		GoTypes:           file_library_proto_goTypes,
 		DependencyIndexes: file_library_proto_depIdxs,

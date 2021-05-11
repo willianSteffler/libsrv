@@ -63,5 +63,19 @@ message SocketMsg {
   }
 }
 
+message SingleResp{
+  oneof resp {
+    Livro livro = 1;
+    Erro err = 2;
+  }
+}
+
+service Library {
+  rpc ConsultarLivros(ConsultarLivroArgs) returns (stream Livro);
+  rpc CriarLivro(Livro) returns (SingleResp);
+  rpc DeletarLivro(Livro) returns (SingleResp);
+  rpc Alterar(Livro) returns (SingleResp);
+}
+
 
 

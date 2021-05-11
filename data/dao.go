@@ -73,13 +73,15 @@ func (c *LibraryController) ConsultarLivro(consulta ConsultarLivroArgs)(err erro
 	sql := fmt.Sprintf( "SELECT DISTINCT livros.* "+
 		"FROM livros, autores "+
 		"JOIN livroautor l on l.codigolivro = livros.codigo and l.codigoautor = autores.codigo "+
-		"JOIN edicoes e on e.codigolivro = livros.codigo " +
-		"LIMIT %d " +
-		"OFFSET %d ",limit,offset)
+		"JOIN edicoes e on e.codigolivro = livros.codigo ")
 	if q != "" {
 		q = strings.TrimRight(q," and ")
 		sql = sql + " WHERE " + q
 	}
+
+	sql += fmt.Sprintf( "LIMIT %d " +
+		"OFFSET %d ",limit,offset);
+
 
 	db.Preload("Edicoes").Preload("Autores").Raw(sql).Find(&livros)
 
