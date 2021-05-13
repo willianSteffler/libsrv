@@ -8012,7 +8012,7 @@ INSERT INTO livros (codigo, titulo) VALUES (8011, 'A courageous conquest        
 INSERT INTO livros (codigo, titulo) VALUES (8012, 'The little typewriter                        ');
 INSERT INTO livros (codigo, titulo) VALUES (8013, 'Sagebrush lawyer                             ');
 INSERT INTO livros (codigo, titulo) VALUES (8014, 'The story of Hetty Hemenway Richard          ');
-INSERT INTO livros (codigo, titulo) VALUES (8015, 'War problems of business as the controller se');
+INSERT INTO livros (codigo, titulo) VALUES (8015, 'War problems of business as the controllers se');
 INSERT INTO livros (codigo, titulo) VALUES (8016, 'Controllership problems in distribution..    ');
 INSERT INTO livros (codigo, titulo) VALUES (8017, 'The search for social security               ');
 INSERT INTO livros (codigo, titulo) VALUES (8018, 'A closer walk with God                       ');

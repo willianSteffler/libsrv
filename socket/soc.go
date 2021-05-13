@@ -100,7 +100,7 @@ func Listen(port int, db *gorm.DB) error {
 	dao.Init(db)
 	l, err := net.Listen("tcp4", fmt.Sprintf(":%d", port))
 	if err != nil {
-		return err
+		log.Fatalf("erro ao criar conexão socket : %v", err)
 	}
 
 	defer l.Close()

@@ -1,4 +1,4 @@
-package grpc
+package grpcctrl
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ func Listen(port int, db *gorm.DB) error {
 
 	lis, err := net.Listen("tcp4", fmt.Sprintf(":%d", port))
 	if err != nil {
-		log.Fatalf("erro ao criar conexão grpc: %v", err)
+		log.Fatalf("erro ao criar conexão grpcctrl: %v", err)
 	}
 
 	var opts []grpc.ServerOption
@@ -24,7 +24,7 @@ func Listen(port int, db *gorm.DB) error {
 	data.RegisterLibraryServer(grpcServer, &libServer)
 	reflection.Register(grpcServer)
 
-	log.Printf("grpc aguarando conexões em %s",lis.Addr().String())
+	log.Printf("grpcctrl aguarando conexões em %s",lis.Addr().String())
 
 	err = grpcServer.Serve(lis)
 

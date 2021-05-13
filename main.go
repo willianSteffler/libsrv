@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/willianSteffler/libsrv/data"
+	"github.com/willianSteffler/libsrv/grpcctrl"
 	"github.com/willianSteffler/libsrv/socket"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -27,6 +28,8 @@ type DbConf struct {
 
 type Conf struct {
 	socketPort int
+	grpcPort int
+
 	DbConf
 }
 
@@ -35,6 +38,7 @@ var conf Conf
 func main() {
 
 	flag.IntVar(&conf.socketPort, "socket", 3000, "porta socket")
+	flag.IntVar(&conf.grpcPort, "grpc", 3100, "porta grpc")
 	flag.StringVar(&conf.driver, "driver", "sqlite", "driver do banco de dados")
 	flag.IntVar(&conf.connLife, "connLife", 60, "tempo de vida da conexão com o banco em minutos")
 	flag.IntVar(&conf.connIdle, "connIdle", 5, "maximo de conexões com o banco em estado idle")
@@ -67,8 +71,18 @@ func main() {
 		log.Fatalf("não foi possível conectar ao banco de dados %v!!", err)
 	}
 
-	if err = socket.Listen(conf.socketPort,db); err != nil {
-		log.Fatalf("erro no socket %v!!", err)
+	go func() {
+		for {
+			if err = socket.Listen(conf.socketPort,db); err != nil {
+				log.Printf("erro no socket %v!!", err)
+			}
+		}
+	}()
+
+	for {
+		if err = grpcctrl.Listen(conf.grpcPort,db); err != nil {
+			log.Printf("erro no grpcctrl %v!!", err)
+		}
 	}
 
 }
